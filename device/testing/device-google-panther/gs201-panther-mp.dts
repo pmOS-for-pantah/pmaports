@@ -1,0 +1,15 @@
+// SPDX-License-Identifier: GPL-2.0-only
+/*
+ * The bootloader applies the board overlay from the dtbo partition that
+ * matches the board_id and board_rev of the phone. The stock overlay
+ * references labels from the Google device tree that the mainline tree
+ * does not have, so it is replaced with this empty one.
+ */
+
+/dts-v1/;
+/plugin/;
+
+/ {
+	board_id = <0x30406>;
+	board_rev = <0x10000>;
+};
