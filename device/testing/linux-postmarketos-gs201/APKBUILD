@@ -1,7 +1,7 @@
 maintainer="sidharthify <wednisegit@gmail.com>"
 pkgname=linux-postmarketos-gs201
 pkgver=7.3_rc6
-pkgrel=0
+pkgrel=1
 pkgdesc="Google gs201 (Pixel 7 Series) close-to-mainline kernel"
 arch="aarch64"
 _carch="arm64"
@@ -27,7 +27,7 @@ makedepends="
 "
 
 # Source
-_commit="020c529b029baa4397e449c4a4a4925a51372126"
+_commit="30cddfdb3178c8a8e9f2c1a4127091d1155ffddd"
 _config="config-$_flavor.$arch"
 source="
 	$pkgname-$_commit.tar.gz::https://github.com/pmOS-for-pantah/linux/archive/$_commit.tar.gz
@@ -68,6 +68,6 @@ package() {
 }
 
 sha512sums="
-7980f5b861f70abdb55d0112fa7dab1e68c738eca4dda2693882f059a257e59b60873ebfa43ea4a3ab3f2beca50fd1229ed5d327b0d7b43ffd50036070f5d7d2  linux-postmarketos-gs201-020c529b029baa4397e449c4a4a4925a51372126.tar.gz
-a9a7098c7b6a2b9b8258d9d795608acd381bf9261f3d4179cf1ecf55c455b13b1f644fb8c2ee80c6b620728bd356be66151f42f8114f56bc12b245c7ef5eda7c  config-postmarketos-gs201.aarch64
+261d9b24a3170a774f43e8ec8a1b698adf0313bcf2931a659b2657a02b296061a6173b19f4c54a7326c1ae8beedf43ba75cc6e104782991a03a2bf3e7c0368fa  linux-postmarketos-gs201-30cddfdb3178c8a8e9f2c1a4127091d1155ffddd.tar.gz
+81575911b9cbea2152c5ea64c78a5a327e24156d875f81cb5a13105b5606a80c617f79a02ac0e7da2015c07d7b50f3142ae8a4fe0284341f03685bb079866729  config-postmarketos-gs201.aarch64
 "
