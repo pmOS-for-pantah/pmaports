@@ -1,0 +1,73 @@
+maintainer="sidharthify <wednisegit@gmail.com>"
+pkgname=linux-postmarketos-gs201
+pkgver=7.3_rc6
+pkgrel=0
+pkgdesc="Google gs201 (Pixel 7 Series) close-to-mainline kernel"
+arch="aarch64"
+_carch="arm64"
+_flavor="postmarketos-gs201"
+url="https://kernel.org"
+license="GPL-2.0-only"
+options="!strip !check !tracedeps pmb:cross-native pmb:kconfigcheck-community"
+makedepends="
+	bison
+	clang
+	elfutils-dev
+	findutils
+	flex
+	linux-headers
+	lld
+	llvm
+	lz4
+	openssl-dev
+	pahole
+	perl
+	python3
+	zstd
+"
+
+# Source
+_commit="020c529b029baa4397e449c4a4a4925a51372126"
+_config="config-$_flavor.$arch"
+source="
+	$pkgname-$_commit.tar.gz::https://github.com/pmOS-for-pantah/linux/archive/$_commit.tar.gz
+	$_config
+"
+builddir="$srcdir/linux-$_commit"
+_outdir=".output"
+
+prepare() {
+	default_prepare
+	cp "$srcdir/config-$_flavor.$CARCH" .config
+}
+
+build() {
+	unset LDFLAGS
+	make all Image.lz4 ARCH="$_carch" LLVM=1 \
+		KBUILD_BUILD_VERSION="$((pkgrel + 1 ))-postmarketOS"
+}
+
+package() {
+	install -Dm644 "$builddir/arch/$_carch/boot/vmlinuz.efi" \
+		"$pkgdir/boot/linux.efi"
+
+	install -Dm644 "$builddir/arch/$_carch/boot/Image.lz4" \
+		"$pkgdir/boot/vmlinuz"
+
+	make modules_install dtbs_install \
+		ARCH="$_carch" \
+		LLVM=1 \
+		INSTALL_PATH="$pkgdir"/boot \
+		INSTALL_MOD_PATH="$pkgdir"/usr \
+		INSTALL_MOD_STRIP=1 \
+		INSTALL_DTBS_PATH="$pkgdir"/boot/dtbs
+	rm -f "$pkgdir"/usr/lib/modules/*/build "$pkgdir"/usr/lib/modules/*/source
+
+	install -Dm644 "$builddir"/include/config/kernel.release \
+		"$pkgdir"/usr/share/kernel/$_flavor/kernel.release
+}
+
+sha512sums="
+7980f5b861f70abdb55d0112fa7dab1e68c738eca4dda2693882f059a257e59b60873ebfa43ea4a3ab3f2beca50fd1229ed5d327b0d7b43ffd50036070f5d7d2  linux-postmarketos-gs201-020c529b029baa4397e449c4a4a4925a51372126.tar.gz
+a9a7098c7b6a2b9b8258d9d795608acd381bf9261f3d4179cf1ecf55c455b13b1f644fb8c2ee80c6b620728bd356be66151f42f8114f56bc12b245c7ef5eda7c  config-postmarketos-gs201.aarch64
+"
