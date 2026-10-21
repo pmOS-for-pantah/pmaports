@@ -1,0 +1,23 @@
+maintainer="sidharthify <wednisegit@gmail.com>"
+pkgname=soc-google-gs201
+pkgver=1
+pkgrel=0
+pkgdesc="Common files for gs201"
+url="https://postmarketos.org"
+depends="postmarketos-mkinitfs devicepkg-utils devmem2"
+source="20-devmem.files 00-enable-fb.sh"
+arch="aarch64"
+license="BSD-3-Clause"
+options="!check !archcheck !tracedeps"
+
+package() {
+	install -Dm644 "$srcdir"/20-devmem.files \
+		"$pkgdir"/usr/share/mkinitfs/files/20-devmem.files
+	install -Dm644 "$srcdir"/00-enable-fb.sh \
+	-t "$pkgdir"/usr/share/mkinitfs/hooks/
+}
+
+sha512sums="
+3fbe0463aa08e7a1ed8141c2d1d84e0e2ced53dc9b0d3a06dbca4a302bf5d96bc1a2e5c9a9600efc19b57c178326f4f0194a8839bb50de3192d8f19cc92fb980  20-devmem.files
+74b58e7ff4718d690184f665536b0f5b14f5247f5568bf2f85640a996d4b290f589d4fe93334fac7f941c9df9bf1ffc0ec4fa63223c08014020066c8fe0feabb  00-enable-fb.sh
+"
