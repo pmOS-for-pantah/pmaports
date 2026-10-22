@@ -1,0 +1,21 @@
+From: sidharthify <wednisegit@gmail.com>
+Subject: [PATCH] panfrost: Add the Mali-G710
+
+The Mali-G710 (product ID 10.8.2, as on the Google gs201) is the bigger
+sibling of the Mali-G610 and shares its architecture. Without a model
+entry the driver rejects it and the system falls back to software
+rendering. Describe it with the G610 tile buffer sizes and rates.
+
+Signed-off-by: sidharthify <wednisegit@gmail.com>
+---
+--- a/src/panfrost/model/pan_model.c
++++ b/src/panfrost/model/pan_model.c
+@@ -85,6 +85,8 @@
+                                               MODEL_RATES_X(2, 4, 8,  32,  32, 8)),
+    VALHALL_MODEL(PAN_PROD_ID(9, 0, 3), 0, "G57",    "G77", MODEL_ANISO(ALL),  MODEL_TB_SIZES(16384,  8192),
+                                               MODEL_RATES_X(2, 4, 8,  32,  32, 8)),
++   VALHALL_MODEL(PAN_PROD_ID(10, 8, 2), 0, "G710",   "G710", MODEL_ANISO(ALL),  MODEL_TB_SIZES(32768, 16384),
++                                              MODEL_RATES_X(4, 8, 16,  64,  64, 16)),
+    VALHALL_MODEL(PAN_PROD_ID(10, 8, 7), 0, "G610",   "G710", MODEL_ANISO(ALL),  MODEL_TB_SIZES(32768, 16384),
+                                               MODEL_RATES_X(4, 8, 16,  64,  64, 16)),
+    /* var/cvt/sfu rates might not be correct (we haven't found any detailed documentation) */
