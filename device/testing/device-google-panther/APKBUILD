@@ -2,7 +2,7 @@ maintainer="sidharthify <wednisegit@gmail.com>"
 pkgname=device-google-panther
 pkgdesc="Google Pixel 7"
 pkgver=1
-pkgrel=1
+pkgrel=3
 url="https://postmarketos.org"
 license="MIT"
 arch="aarch64"
@@ -47,8 +47,8 @@ nonfree_firmware() {
 }
 
 sha512sums="
-97a7e5ba91310737921da28d311f71a85c4c6b9d0591d913894ef03941a670c3541839b0657be205866698f1fdef0b1a0e256a685dd405c6020cad12890d263e  deviceinfo
+bb3965a88aab9a2ef950c1d519086af250c7383f158db58a9dd463491990d89aa6a7f3b640a74bbc306e11a4e2113daef3b28e7a6c9ab3b43a08a99d45efde32  deviceinfo
 596ba55f6860b1ee66c06b81c5b077bb4cd59fa547188d109bc0accd4eabae33a92940b4fb1bab6e26750e2cddcb4403b2316498e47741a817bb40135844ebed  dtboimg.cfg
 23746b6f6409f197369a42c6793baabb4421cec3ee8bf21eaf799e3c3d30d34afbb003a78105b990bcfbc5473d25f6fc304649a80d9a1f1dd8bc8cbad5439006  gs201-panther-mp.dts
-04c0c8436890cae036a4a6f81c7c026a65b3e2a73c0ee2d32d2265c8888dc71893175dc31c09f4dc07c3789c21b927e07745120baa96b8c3d4a94c3e6cfd4d77  kernel-cmdline.conf
+8d942426decfd894fd8f98bf94e8fadf18efb5c1bfab5c82eee59065f38455f46b88d0907fe4707c8216577cb8863e9c451aa8dc4d10bc71e2cff3e0903e89cb  kernel-cmdline.conf
 "

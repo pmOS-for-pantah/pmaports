@@ -12,7 +12,7 @@ deviceinfo_arch="aarch64"
 
 # Device related
 deviceinfo_chassis="handset"
-deviceinfo_drm="false"
+deviceinfo_drm="true"
 
 # Bootloader related
 deviceinfo_flash_method="fastboot"
