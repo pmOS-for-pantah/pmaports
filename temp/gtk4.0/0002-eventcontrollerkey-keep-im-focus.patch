@@ -1,0 +1,34 @@
+From: sidharthify <wednisegit@gmail.com>
+Subject: [PATCH] eventcontrollerkey: Keep IM focus while focus moves inside the widget
+
+A search entry with a key capture widget puts its IM context on a key
+controller of that widget, usually the whole window. When focus moves
+between two children of the window, the controller sees the focus-out
+crossing first and drops IM focus, then the focus-in crossing and takes
+it back. On Wayland that ends up as text-input disable and enable in one
+commit, which text-input v1 compositors read as a request to show the
+on-screen keyboard, so the OSK pops up on every tap in apps like
+GNOME Settings.
+
+Keep IM focus when focus moves to another child of the widget, unless
+the new focus is a text widget with its own IM context.
+
+Signed-off-by: sidharthify <wednisegit@gmail.com>
+---
+--- a/gtk/gtkeventcontrollerkey.c
++++ b/gtk/gtkeventcontrollerkey.c
+@@ -173,7 +173,13 @@
+   is_focus = end_crossing ||
+     /* Keep IM focused if focus moves from an input capture widget to the real one */
+     (start_crossing &&
+-     gtk_im_context_get_client_widget (key->im_context) == crossing->new_target);
++     gtk_im_context_get_client_widget (key->im_context) == crossing->new_target) ||
++    /* Keep IM focused if focus moves between children of the widget */
++    (start_crossing && crossing->new_target &&
++     (crossing->new_target == widget ||
++      gtk_widget_is_ancestor (crossing->new_target, widget)) &&
++     !GTK_IS_TEXT (crossing->new_target) &&
++     !GTK_IS_TEXT_VIEW (crossing->new_target));
+ 
+   if (key->is_focus != is_focus)
+     {
