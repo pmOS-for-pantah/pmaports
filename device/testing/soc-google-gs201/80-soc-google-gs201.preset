@@ -1,1 +1,2 @@
 enable gs201-mark-boot-successful.service
+enable gs201-bt-addr.service

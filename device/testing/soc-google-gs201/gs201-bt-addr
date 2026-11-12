@@ -1,0 +1,15 @@
+#!/bin/sh
+addr=$(tr -d '\0' < /proc/device-tree/chosen/config/bt_addr)
+
+i=0
+until btmgmt -i hci0 info 2> /dev/null | grep -q 'addr '; do
+	if [ "$i" -ge 60 ]; then
+		echo "hci0 did not show up" >&2
+		exit 1
+	fi
+	sleep 1
+	i=$((i + 1))
+done
+
+btmgmt -i hci0 power off
+btmgmt -i hci0 public-addr "$addr" | grep -q 'complete'

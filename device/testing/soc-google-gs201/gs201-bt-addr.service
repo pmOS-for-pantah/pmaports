@@ -1,0 +1,11 @@
+[Unit]
+Description=Set the Bluetooth address from the bootloader
+ConditionPathExists=/proc/device-tree/chosen/config/bt_addr
+Before=bluetooth.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/libexec/gs201-bt-addr
+
+[Install]
+WantedBy=bluetooth.target
