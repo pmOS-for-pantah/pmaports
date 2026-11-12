@@ -5,7 +5,7 @@ maintainer="Stefan Hansson <newbyte@postmarketos.org>"
 pkgname=gnome-shell-mobile
 _pkgver=48.0
 pkgver=9999$_pkgver
-pkgrel=9
+pkgrel=10
 pkgdesc="GNOME shell mobile"
 url="https://wiki.gnome.org/Projects/GnomeShell"
 # armhf: mutter-mobile, gjs
@@ -18,6 +18,7 @@ depends="
 	desktop-file-utils
 	gnome-bluetooth
 	gnome-control-center
+	gmobile
 	gnome-shell-mobile-schemas
 	gsettings-desktop-schemas
 	gst-plugin-pipewire
@@ -93,6 +94,7 @@ source="gnome-shell-mobile-$_commit.tar.gz::https://gitlab.gnome.org/verdre/gnom
 	0010-gdm-util-Clear-the-request-if-user-verifier-connection-is-closed.patch
 	0011-gdm-util-Do-not-run-dispose-on-user-verifier.patch
 	0012-gdm-loginDialog-Reset-the-greeter-proxy-on-connection-closed.patch
+	0013-layout-Size-top-panel-from-gmobile-display-cutouts.patch
 	"
 builddir="$srcdir/gnome-shell-mobile-$_commit"
 options="!check" # Tests have circular dependency 'gnome-shell <-> gdm'
@@ -170,4 +172,5 @@ ef5e712ae487107f4fdeea85e778ce6cfc0015a1279650a95b2453c11e86e6fbe8e7ccbb23751eea
 6e407b67f73264c4f222693da51aa705450112d11875a753dc9d9b16989c1e13a51eaeba79bdaa6f9436e0ca416c310db2356ad45b8caa35a9b8d80ccecbdd4b  0010-gdm-util-Clear-the-request-if-user-verifier-connection-is-closed.patch
 e10c2eaa4369f31521ceff67c1308258bd320526fab6b6983f839b6a64be151c855c9b6cb0c02b20fee55a4466bf93c96b57549018fe2722778efde261701a2c  0011-gdm-util-Do-not-run-dispose-on-user-verifier.patch
 5bc7e2d7d0ed5d22caaa22b0834d630b607002b133a1537e81cd64b3ba29255f418a8585ff213508d6241171cba2133b5c7cd1afbafe8a118becf69dbeaee0b8  0012-gdm-loginDialog-Reset-the-greeter-proxy-on-connection-closed.patch
+b24a91e2a264bfb7ee113342a1b53c7f22bfbae72390cd51f7eb71893389b76789174340557a89e4978789eb7b77daa13f5f5a38e198afbdcc821c7df2d368d9  0013-layout-Size-top-panel-from-gmobile-display-cutouts.patch
 "

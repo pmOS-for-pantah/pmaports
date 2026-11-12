@@ -1,0 +1,120 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: sidharthify <wednisegit@gmail.com>
+Date: Thu, 12 Nov 2026 09:53:38 +0530
+Subject: [PATCH] layout: Size top panel from gmobile display cutouts
+
+On phones with a punch-hole camera or notch the panel can end up
+shorter than the cutout, so the cutout reaches into the windows below
+it. On the Pixel 7 the hole ends at 102px while the 2.2em panel is
+96px tall at scale 3.
+
+Look up the display panel in gmobile by device tree compatible and
+make the panel at least as tall as the lowest top cutout plus its gap
+from the screen edge. That keeps the cutout centered in the bar, which
+also matches the status bar height Android uses on these devices.
+
+Signed-off-by: sidharthify <wednisegit@gmail.com>
+---
+ js/ui/layout.js | 42 ++++++++++++++++++++++++++++++++++++++++++
+ js/ui/panel.js  | 11 +++++++++++
+ 2 files changed, 53 insertions(+)
+
+diff --git a/js/ui/layout.js b/js/ui/layout.js
+index 4e78d13..88182f7 100644
+--- a/js/ui/layout.js
++++ b/js/ui/layout.js
+@@ -2,6 +2,7 @@ import Clutter from 'gi://Clutter';
+ import Gio from 'gi://Gio';
+ import GLib from 'gi://GLib';
+ import GObject from 'gi://GObject';
++import Gm from 'gi://Gm';
+ import Meta from 'gi://Meta';
+ import Mtk from 'gi://Mtk';
+ import Shell from 'gi://Shell';
+@@ -213,6 +214,8 @@ export const LayoutManager = GObject.registerClass({
+ 
+         this._keyboardIndex = -1;
+         this._rightPanelBarrier = null;
++        this._displayPanel = this._loadDisplayPanel();
++        this.topCutoutHeight = 0;
+ 
+         this._inOverview = false;
+         this._updateRegionIdle = 0;
+@@ -686,9 +689,48 @@ export const LayoutManager = GObject.registerClass({
+         }
+     }
+ 
++    _loadDisplayPanel() {
++        let compatibles;
++
++        try {
++            compatibles = Gm.device_tree_get_compatibles('/sys');
++        } catch (e) {
++            return null;
++        }
++
++        if (!compatibles)
++            return null;
++
++        Gm.init();
++        this._deviceInfo = new Gm.DeviceInfo({compatibles});
++        return this._deviceInfo.get_display_panel();
++    }
++
++    _updateTopCutoutHeight() {
++        const monitor = this.primaryMonitor;
++        let height = 0;
++
++        if (this._isPhone && this._displayPanel && monitor.height > monitor.width) {
++            const xRes = this._displayPanel.get_x_res();
++            const yRes = this._displayPanel.get_y_res();
++            const scale = xRes > 0 ? monitor.width / xRes : 1;
++            const cutouts = this._displayPanel.get_cutouts();
++
++            for (let i = 0; i < cutouts.get_n_items(); i++) {
++                const bounds = cutouts.get_item(i).get_bounds();
++
++                if (bounds.y + bounds.height <= yRes / 2)
++                    height = Math.max(height, (2 * bounds.y + bounds.height) * scale);
++            }
++        }
++
++        this.topCutoutHeight = Math.ceil(height);
++    }
++
+     _monitorsChanged() {
+         this._updateMonitors();
+         this._updateIsPhone(),
++        this._updateTopCutoutHeight();
+         this._updateBoxes();
+         this._updateHotCorners();
+         this._updateBackgrounds();
+diff --git a/js/ui/panel.js b/js/ui/panel.js
+index 6e9f122..00c1da6 100644
+--- a/js/ui/panel.js
++++ b/js/ui/panel.js
+@@ -704,6 +704,10 @@ class Panel extends St.Widget {
+         global.display.connectObject('workareas-changed',
+             () => this.queue_relayout(),
+             this);
++
++        Main.layoutManager.connectObject('monitors-changed',
++            () => this.queue_relayout(),
++            this);
+         this._updatePanel();
+     }
+ 
+@@ -734,6 +738,13 @@ class Panel extends St.Widget {
+         return [0,  0];
+     }
+ 
++    vfunc_get_preferred_height(forWidth) {
++        const [minHeight, natHeight] = super.vfunc_get_preferred_height(forWidth);
++        const cutoutHeight = Main.layoutManager.topCutoutHeight;
++
++        return [Math.max(minHeight, cutoutHeight), Math.max(natHeight, cutoutHeight)];
++    }
++
+     vfunc_allocate(box) {
+         this.set_allocation(box);
+ 
