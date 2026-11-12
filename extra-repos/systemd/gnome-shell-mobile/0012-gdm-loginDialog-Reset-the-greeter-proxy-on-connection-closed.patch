@@ -1,0 +1,46 @@
+From ed6531fa79a67309f786893321c4b7af23f9d651 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Marco=20Trevisan=20=28Trevi=C3=B1o=29?= <mail@3v1n0.net>
+Date: Wed, 17 Sep 2025 18:26:17 +0200
+Subject: [PATCH] gdm/loginDialog: Reset the greeter proxy on connection closed
+
+If gdm fails to start the display session the greeter proxy we are using
+gets disconnected, however since commit 56ea95f2 we are now preserving
+the greeter instance, and this will eventually lead to using an instance
+of a disconnected proxy.
+
+This eventually implies that after a login failure, we would never get
+the `::session-opened` signal that actually triggers the session start.
+
+And thus, even the user has properly authenticated, gdm will stick to
+the authentication page.
+
+So, instead of reverting such commit (that isn't wrong per se), consume
+the greeter proxy connection `::closed` signal and use it to
+re-initialize the greeter instance.
+
+Part-of: <https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/3885>
+---
+ js/gdm/loginDialog.js | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/js/gdm/loginDialog.js b/js/gdm/loginDialog.js
+index 70b68e304a..9f8a3afc22 100644
+--- a/js/gdm/loginDialog.js
++++ b/js/gdm/loginDialog.js
+@@ -1051,6 +1051,13 @@ export const LoginDialog = GObject.registerClass({
+ 
+             this._greeter = this._gdmClient.get_greeter_sync(null);
+ 
++            this._greeter.get_connection().connectObject('closed', connection => {
++                connection.disconnectObject(this);
++                this._greeter.disconnectObject(this);
++                this._greeter = null;
++                this._ensureGreeterProxy();
++            }, this);
++
+             this._greeter.connectObject(
+                 'default-session-name-changed', this._onDefaultSessionChanged.bind(this),
+                 'session-opened', this._onSessionOpened.bind(this),
+-- 
+GitLab
+

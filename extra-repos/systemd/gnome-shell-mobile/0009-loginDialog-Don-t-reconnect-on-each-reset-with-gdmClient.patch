@@ -1,0 +1,55 @@
+From 56ea95f2204b22bbd530c7b90f9045ca0b1ae722 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Joan=20Torres=20L=C3=B3pez?= <joantolo@redhat.com>
+Date: Wed, 11 Jun 2025 17:46:07 +0200
+Subject: [PATCH] loginDialog: Don't reconnect on each reset with gdmClient
+
+When resetting the greeter proxy, it's destroyed and then recreated
+again.
+
+This destroy/recreate thing doesn't give any info to GDM and the greeter
+interface destroyed has the same state as the newly created one.
+
+Each time get_greeter_sync is called when greeter is destroyed makes GDM
+create a new connection which stores in a list. This means that for each
+reset a new unnecessary connection is created and stored.
+
+GDM was leaking some objects which combined with this excessive connection
+creation was causing a fd leak on each reset.
+
+To make better use of resources and avoid problems, use ensure instead
+of reset greeter proxy.
+
+Part-of: <https://gitlab.gnome.org/GNOME/gnome-shell/-/merge_requests/3749>
+---
+ js/gdm/loginDialog.js | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/js/gdm/loginDialog.js b/js/gdm/loginDialog.js
+index 44dad333f5..15ba43a351 100644
+--- a/js/gdm/loginDialog.js
++++ b/js/gdm/loginDialog.js
+@@ -990,10 +990,10 @@ export const LoginDialog = GObject.registerClass({
+         this._showPrompt();
+     }
+ 
+-    _resetGreeterProxy() {
++    _ensureGreeterProxy() {
+         if (GLib.getenv('GDM_GREETER_TEST') !== '1') {
+             if (this._greeter)
+-                this._greeter.run_dispose();
++                return;
+ 
+             this._greeter = this._gdmClient.get_greeter_sync(null);
+ 
+@@ -1005,7 +1005,7 @@ export const LoginDialog = GObject.registerClass({
+     }
+ 
+     _onReset(authPrompt, beginRequest) {
+-        this._resetGreeterProxy();
++        this._ensureGreeterProxy();
+         this._sessionMenuButton.updateSensitivity(true);
+ 
+         const previousUser = this._user;
+-- 
+GitLab
+
