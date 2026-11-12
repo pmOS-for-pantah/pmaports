@@ -1,11 +1,17 @@
 maintainer="sidharthify <wednisegit@gmail.com>"
 pkgname=soc-google-gs201
 pkgver=1
-pkgrel=0
+pkgrel=1
 pkgdesc="Common files for gs201"
 url="https://postmarketos.org"
 depends="postmarketos-mkinitfs devicepkg-utils devmem2"
-source="20-devmem.files 00-enable-fb.sh"
+source="
+	20-devmem.files
+	00-enable-fb.sh
+	80-soc-google-gs201.preset
+	gs201-mark-boot-successful
+	gs201-mark-boot-successful.service
+	"
 arch="aarch64"
 license="BSD-3-Clause"
 options="!check !archcheck !tracedeps"
@@ -15,9 +21,18 @@ package() {
 		"$pkgdir"/usr/share/mkinitfs/files/20-devmem.files
 	install -Dm644 "$srcdir"/00-enable-fb.sh \
 	-t "$pkgdir"/usr/share/mkinitfs/hooks/
+	install -Dm755 "$srcdir"/gs201-mark-boot-successful \
+		-t "$pkgdir"/usr/libexec/
+	install -Dm644 "$srcdir"/gs201-mark-boot-successful.service \
+		-t "$pkgdir"/usr/lib/systemd/system/
+	install -Dm644 "$srcdir"/80-soc-google-gs201.preset \
+		-t "$pkgdir"/usr/lib/systemd/system-preset/
 }
 
 sha512sums="
 3fbe0463aa08e7a1ed8141c2d1d84e0e2ced53dc9b0d3a06dbca4a302bf5d96bc1a2e5c9a9600efc19b57c178326f4f0194a8839bb50de3192d8f19cc92fb980  20-devmem.files
 74b58e7ff4718d690184f665536b0f5b14f5247f5568bf2f85640a996d4b290f589d4fe93334fac7f941c9df9bf1ffc0ec4fa63223c08014020066c8fe0feabb  00-enable-fb.sh
+6050e1b73e52dc36352e53beb84471ebfabb6a000fcfd133cfda795d48f780a642b9af8ee6988482e4be3bd41fa1d2fa3fa9f49ed0eb593dee3ef9980d27108f  80-soc-google-gs201.preset
+9798dc6ed0623728db2ad9d0f48dec229dd179dd850155e580a4775132e39f5b022101b70d24c7577bf14439bb79aa44ebd868b63c2dcdf48f1e3b29116ff96f  gs201-mark-boot-successful
+00b2ece4a7b91a0ff17d2a6e156ebb59f1eba4538c6c54928342401dcc3be01cc21d1597859f21c1bbe7c692edd029ce17731ad7525992904b3a9ff1fa138a93  gs201-mark-boot-successful.service
 "

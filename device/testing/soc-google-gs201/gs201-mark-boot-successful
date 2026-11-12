@@ -1,0 +1,26 @@
+#!/bin/sh -e
+dev=/dev/disk/by-partlabel/devinfo
+
+case "$(sed -n 's/^androidboot.slot_suffix = "\(.*\)"$/\1/p' /proc/bootconfig)" in
+_a)
+	offset=49
+	;;
+_b)
+	offset=53
+	;;
+*)
+	exit 0
+	;;
+esac
+
+if [ "$(dd if="$dev" bs=4 count=1 2>/dev/null)" != "DEVI" ]; then
+	echo "devinfo magic not found" >&2
+	exit 1
+fi
+
+flags=$(od -An -tu1 -j "$offset" -N1 "$dev" | tr -d ' ')
+if [ $((flags & 2)) -ne 0 ]; then
+	exit 0
+fi
+
+printf "\\$(printf '%03o' $((flags | 2)))" | dd of="$dev" bs=1 seek="$offset" conv=notrunc,fsync 2>/dev/null

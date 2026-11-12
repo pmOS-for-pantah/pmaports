@@ -1,0 +1,10 @@
+[Unit]
+Description=Mark the booted A/B slot as successful
+After=local-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/libexec/gs201-mark-boot-successful
+
+[Install]
+WantedBy=multi-user.target
