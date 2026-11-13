@@ -1,7 +1,7 @@
 maintainer="sidharthify <wednisegit@gmail.com>"
 pkgname=soc-google-gs201
 pkgver=1
-pkgrel=2
+pkgrel=3
 pkgdesc="Common files for gs201"
 url="https://postmarketos.org"
 depends="bluez-btmgmt postmarketos-mkinitfs devicepkg-utils devmem2"
@@ -14,6 +14,7 @@ source="
 	gs201-bt-addr
 	gs201-bt-addr.service
 	soc-google-gs201-btbcm.conf
+	72-gs201-haptics.rules
 	"
 arch="aarch64"
 license="BSD-3-Clause"
@@ -36,6 +37,8 @@ package() {
 		"$pkgdir"/usr/lib/modprobe.d/soc-google-gs201-btbcm.conf
 	install -Dm644 "$srcdir"/80-soc-google-gs201.preset \
 		-t "$pkgdir"/usr/lib/systemd/system-preset/
+	install -Dm644 "$srcdir"/72-gs201-haptics.rules \
+		-t "$pkgdir"/usr/lib/udev/rules.d/
 }
 
 sha512sums="
@@ -47,4 +50,5 @@ sha512sums="
 0d1b19c4bff73786a1f4474b474e1e86f876a7648427eda05c40b67154448cfca724c880b68a9f922d6cb6aab6475e8c3b3ef0c3878627621137f1eada7bede1  gs201-bt-addr
 91d20b36df0ac07a3b4dd122819a23785897a39711b03f21c63f4706dc786a3b2632e551ff02ae634ae0fa4cd23369b462ae86c2dbff70a97d68d39cedc877ec  gs201-bt-addr.service
 6a1df334b63092ad0bf7c3310368a3383f9b83a2ef056fdd626400891181dc8d200c5808a020c7c6bf4bb681b9d934ce94769bde9739a122838a7775109f751b  soc-google-gs201-btbcm.conf
+293702e2d52edf6209b2e8f18b6f817ae83e4c222050ab73307f27afc264e36b1682e2aa8f845db82bbcd8efca8478b6abc035846c0dccde478df2d4547a6693  72-gs201-haptics.rules
 "
