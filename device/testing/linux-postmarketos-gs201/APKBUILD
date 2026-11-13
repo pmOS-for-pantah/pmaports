@@ -1,7 +1,7 @@
 maintainer="sidharthify <wednisegit@gmail.com>"
 pkgname=linux-postmarketos-gs201
 pkgver=7.3_rc6
-pkgrel=9
+pkgrel=10
 pkgdesc="Google gs201 (Pixel 7 Series) close-to-mainline kernel"
 arch="aarch64"
 _carch="arm64"
@@ -69,5 +69,5 @@ package() {
 
 sha512sums="
 0a1adcc6fc86c31a2aaabfa616470a00593fac56ce03b3b53636f3f9dd5a8186065455015842ace50b9ea7704373d08744e77969a3ae47014adea58c81a7b9e3  linux-postmarketos-gs201-b91c498eaedf5226eee4f6120a35dc21242288c6.tar.gz
-bd826039732edff9a2daebd7fb65b87e6e7b7eb363e4aa42d69744fb2d0e326dcc5222fb3462697e9bcf438b1d2829f3628ccf9e9c88b28c8e239d9538b90ca2  config-postmarketos-gs201.aarch64
+759e19f8b086c7837658ed3c07c6ccd4bbb9649fab97be2d510392d51972516e5507775fa1ff701fd7c312a0ae2be984030a1a79284bb1b3d750890e610b845b  config-postmarketos-gs201.aarch64
 "
